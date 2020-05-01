@@ -2,12 +2,13 @@ package com.lightbend.akkassembly
 
 import akka.{Done, NotUsed}
 import akka.event.LoggingAdapter
-import akka.stream.scaladsl.{Flow, Sink}
+import akka.stream.Materializer
+import akka.stream.scaladsl.{Flow, Sink, Source}
 
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 
-class Auditor {
+class Auditor(implicit mat: Materializer) {
 
   /** Sink to count the number of cars being produced */
   val count: Sink[Any, Future[Int]] =
@@ -18,10 +19,18 @@ class Auditor {
     Sink.foreach(elem => logger.debug(elem.toString))
   }
 
-  /** Flow that takes a sample of cars within a @sampleSize period */
+  /** Flow that takes a sample of produced cars during a @sampleSize period */
   def sample(sampleSize: FiniteDuration): Flow[Car, Car, NotUsed] = {
     Flow[Car]
       .takeWithin(sampleSize)
+  }
+
+  /** Performs a count of the cars in the provided source @cars within the sample duration provided
+   *  and returns the result */
+  def audit(cars: Source[Car, NotUsed], sampleSize: FiniteDuration): Future[Int] = {
+    cars
+      .via(sample(sampleSize))
+      .runWith(count)
   }
 
 }
