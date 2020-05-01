@@ -1,8 +1,12 @@
 package com.lightbend.akkassembly
 
-import akka.stream.scaladsl.Source
+import akka.stream.scaladsl.{Keep, Source}
+import akka.stream.testkit.scaladsl.{TestSource, TestSink}
 import akka.testkit.EventFilter
 import org.scalatest.FreeSpec
+
+import scala.concurrent.duration._
+import scala.collection.immutable.Seq
 
 class AuditorTest extends FreeSpec with AkkaSpec {
 
@@ -47,6 +51,65 @@ class AuditorTest extends FreeSpec with AkkaSpec {
       EventFilter.debug(occurrences = 1, message = "Message").intercept {
         Source.single("Message").runWith(auditor.log)
       }
+    }
+  }
+
+  "sample" - {
+    "should do nothing if the source is empty" in {
+      val auditor = new Auditor
+      val sampleSize = 100.millis
+
+      val source = Source.empty[Car]
+
+      source.via(auditor.sample(sampleSize))
+        .runWith(TestSink.probe[Car])
+        .request(10)
+        .expectComplete()
+    }
+    "should return all elements if they appear within the sample period." in {
+      val auditor = new Auditor
+      val sampleSize = 100.millis
+      val expectedCars = 10
+
+      val (source, sink) = TestSource.probe[Car]
+        .via(auditor.sample(sampleSize))
+        .toMat(TestSink.probe[Car])(Keep.both)
+        .run()
+
+      sink.request(20)
+
+      (1 to expectedCars).foreach(_ => source.sendNext(
+        Car(SerialNumber(), Color("000000"), Engine(), Seq.fill(4)(Wheel()), None)
+      ))
+      source.sendComplete()
+
+      sink.expectNextN(expectedCars)
+      sink.expectComplete()
+    }
+    "should ignore elements that appear outside the expected sample period." in {
+      val auditor = new Auditor
+      val sampleSize = 100.millis
+      val expectedCars = 3
+
+      val (source, sink) = TestSource.probe[Car]
+        .via(auditor.sample(sampleSize))
+        .toMat(TestSink.probe[Car])(Keep.both)
+        .run()
+
+      sink.request(20)
+
+      (1 to expectedCars).foreach(_ => source.sendNext(
+        Car(SerialNumber(), Color("000000"), Engine(), Seq.fill(4)(Wheel()), None)
+      ))
+      Thread.sleep(sampleSize.toMillis * 2)
+
+      source.sendNext(
+        Car(SerialNumber(), Color("000000"), Engine(), Seq.fill(4)(Wheel()), None)
+      )
+      source.sendComplete()
+
+      sink.expectNextN(expectedCars)
+      sink.expectComplete()
     }
   }
 }
