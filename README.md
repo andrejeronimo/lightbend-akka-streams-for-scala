@@ -97,3 +97,17 @@ To test your current exercise, use the `test` command from your `sbt` session. T
 ```scala
 man [e] > ... > initial-state > test
 ```
+
+---
+---
+
+### Exercise 7: Fusion - Results
+
+| Name               | Order Cars completed in milliseconds |
+|--------------------|--------------------------------------|
+| 0 ms run           | 1 375 ms                             |
+| 16 ms run          | 15 484 ms                            |
+| 14 ms run          | 13 439 ms                            |
+| 12 ms run          | 11 426 ms                            |
+| 14 ms tail run     | 14 140 ms                            |
+| 10 ms 2 asyncs run | 10 072 ms                            |
