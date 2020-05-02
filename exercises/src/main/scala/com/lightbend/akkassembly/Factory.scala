@@ -5,8 +5,13 @@ import akka.stream.scaladsl.Sink
 
 import scala.concurrent.Future
 
-class Factory(bodyShop: BodyShop, paintShop: PaintShop, engineShop: EngineShop,
-              wheelShop: WheelShop, qualityAssurance: QualityAssurance)(implicit mat: Materializer) {
+class Factory(bodyShop: BodyShop,
+              paintShop: PaintShop,
+              engineShop: EngineShop,
+              wheelShop: WheelShop,
+              qualityAssurance: QualityAssurance,
+              upgradeShop: UpgradeShop)
+             (implicit mat: Materializer) {
 
   /** Builds a @quantity of cars using a stream that performs all the steps of building a car
    *  and returns a sequence of the built cars (future) */
@@ -15,6 +20,7 @@ class Factory(bodyShop: BodyShop, paintShop: PaintShop, engineShop: EngineShop,
       .via(paintShop.paint)
       .via(engineShop.installEngine)
       .via(wheelShop.installWheels)
+      .via(upgradeShop.installUpgrades)
       .via(qualityAssurance.inspect)
       .take(quantity)
       .runWith(Sink.seq)

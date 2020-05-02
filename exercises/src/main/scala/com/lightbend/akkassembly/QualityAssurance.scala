@@ -18,7 +18,7 @@ class QualityAssurance {
     Flow[UnfinishedCar]
     .collect {
       case unfinishedCar if meetsSpecifications(unfinishedCar)=>
-        Car(SerialNumber(), unfinishedCar.color.get, unfinishedCar.engine.get, unfinishedCar.wheels, None)
+        Car(SerialNumber(), unfinishedCar.color.get, unfinishedCar.engine.get, unfinishedCar.wheels, unfinishedCar.upgrade)
       case unfinishedCar =>
         throw new QualityAssurance.CarFailedInspection(unfinishedCar)
     }
