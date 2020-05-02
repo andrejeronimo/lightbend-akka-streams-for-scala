@@ -1,6 +1,6 @@
-building-streams
+fault-tolerance
 
-# Exercise 4 > Building Streams
+# Exercise 5 > Fault Tolerance
 
 In the course video recordings, the instructor uses a `man e` command in the sbt interactive session to display exercise instructions.
 
