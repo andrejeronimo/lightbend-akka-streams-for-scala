@@ -20,6 +20,7 @@ class Factory(bodyShop: BodyShop,
       .via(paintShop.paint.named("paint-stage"))
       .async
       .via(engineShop.installEngine.named("install-engine-stage"))
+      .async
       .via(wheelShop.installWheels.named("install-wheels-stage"))
       .async
       .via(upgradeShop.installUpgrades.named("install-upgrades-stage"))

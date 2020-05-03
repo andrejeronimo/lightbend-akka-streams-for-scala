@@ -8,8 +8,9 @@ import scala.util.Random
 
 object UnfinishedCar {
 
-  /** Optimize Fusion I configuration */
-  private val random = new Random(4)
+  // private val random = new Random(4) // Optimize Fusion I configuration
+  private val random = new Random(7)    // Optimize Fusion II configuration
+
   private val busyTimeScale = 10
 
   private def calculateRandomMillis = random.nextInt(busyTimeScale).millis
