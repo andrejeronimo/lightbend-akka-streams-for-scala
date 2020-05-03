@@ -114,7 +114,7 @@ man [e] > ... > initial-state > test
 
 ---
 
-### Exercise 8: Streams Telemetry Intro
+### Exercise 8: Streams Telemetry Intro - Results
 
 #### Operator Processing Times
 

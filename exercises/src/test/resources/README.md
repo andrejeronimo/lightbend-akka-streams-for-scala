@@ -1,6 +1,6 @@
-streams-telemetry-intro
+optimize-fusion-with-telemetry
 
-# Exercise 7 > Fusion
+# Exercise 8 > Telemetry
 
 In the course video recordings, the instructor uses a `man e` command in the sbt interactive session to display exercise instructions.
 

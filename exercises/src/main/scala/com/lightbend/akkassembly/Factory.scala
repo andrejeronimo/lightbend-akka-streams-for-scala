@@ -18,8 +18,8 @@ class Factory(bodyShop: BodyShop,
   def orderCars(quantity: Int): Future[Seq[Car]] = {
     bodyShop.cars
       .via(paintShop.paint.named("paint-stage"))
-      .via(engineShop.installEngine.named("install-engine-stage"))
       .async
+      .via(engineShop.installEngine.named("install-engine-stage"))
       .via(wheelShop.installWheels.named("install-wheels-stage"))
       .async
       .via(upgradeShop.installUpgrades.named("install-upgrades-stage"))
