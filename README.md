@@ -111,3 +111,31 @@ man [e] > ... > initial-state > test
 | 12 ms run          | 11 426 ms                            |
 | 14 ms tail run     | 14 140 ms                            |
 | 10 ms 2 asyncs run | 10 072 ms                            |
+
+---
+
+### Exercise 8: Streams Telemetry Intro
+
+#### Operator Processing Times
+
+**Question: Why does the list include two install-upgrades-stage-maps? Does this mean the 16 ms run is actually the 18 ms run? Look in the UpgradeShop class. Do you see more than one map operator? Are all the map operators run for each ordered car?**
+
+Answer: The installUpgrades flow includes to map operators (one for DX upgrade and another for Sport upgrade). The map operators don't run for each car, the cars are balanced for the three types of upgrades (DX, Sport and Standard), so each map operator runs for 1/3 of the cars. It continues to be a 16 ms run because for each car only one map operator runs.
+
+
+**Question: Can you determine how long the UpgradeShop balance and UpgradeShop merge took?**
+
+Answer: balance took 1µs and merge took 723ns.
+
+
+**Question: What class and method contain the install-engine-stage-iterableSource operator?**
+
+Answer: EngineShop class, shipments source uses an iterator that continually produces shipments.
+
+#### Stream Throughput
+     
+| Name               | Order Cars completed per sec (stream throughput) |
+|--------------------|--------------------------------------------------|
+| 16 ms run          | 65                                               |
+| 12 ms run          | 88                                               |
+| 10 ms 2 asyncs run | 100                                              |
